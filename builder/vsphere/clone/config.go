@@ -41,6 +41,9 @@ type Config struct {
 	// The import doesn't work if [convert_to_template](#convert_to_template) is set to true.
 	ContentLibraryDestinationConfig *common.ContentLibraryDestinationConfig `mapstructure:"content_library_destination"`
 
+	// TODO sylviamoss add doc
+	CustomizeConfig *CustomizeConfig `mapstructure:"customize"`
+
 	ctx interpolate.Context
 }
 
@@ -74,6 +77,9 @@ func (c *Config) Prepare(raws ...interface{}) ([]string, error) {
 	}
 	if c.ContentLibraryDestinationConfig != nil {
 		errs = packer.MultiErrorAppend(errs, c.ContentLibraryDestinationConfig.Prepare(&c.LocationConfig)...)
+	}
+	if c.CustomizeConfig != nil {
+		err = packer.MultiErrorAppend(errs,c.CustomizeConfig.Prepare()...)
 	}
 
 	if len(errs.Errors) > 0 {
